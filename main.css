@@ -1,0 +1,34 @@
+main {
+    display: flex;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    width: 20em;
+}
+
+section {
+    display: flex;
+    justify-content: space-between;
+    width: 17em;
+    margin: 0 0 5px 5px;
+}
+
+select {
+    width: 55%;
+}
+
+section.submit {
+    justify-content: flex-end;
+}
+
+#landingZone {
+    display: flex;
+    width: 100px;
+    height: 50px;
+    justify-content: space-around;
+    align-items: center;
+    border: slategray 1px dotted;
+    text-align: center;
+}

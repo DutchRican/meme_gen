@@ -1,0 +1,21 @@
+{
+    "name": "Meme Generator",
+    "version": "0.1",
+    "description": "Create a meme from an image on a page",
+    "manifest_version": 2,
+    "permissions": [
+        "activeTab"
+    ],
+    "icons": {
+        "16": "./icons/icon16.png",
+        "48": "./icons/icon48.png",
+        "128": "./icons/icon128.png"
+    },
+    "background": {
+        "scripts": ["index.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_popup": "index.html"
+    }
+}
