@@ -1,11 +1,12 @@
 {
     "name": "Meme Generator",
-    "short_name": "Meme Gen",
-    "version": "0.1",
+    "short_name": "Meme Generator",
+    "version": "0.2",
     "description": "Create a meme from an image on a page",
     "manifest_version": 2,
     "permissions": [
-        "activeTab"
+        "activeTab",
+        "storage"
     ],
     "icons": {
         "16": "./icons/icon16.png",
@@ -14,10 +15,16 @@
         "128": "./icons/icon128.png"
     },
     "background": {
-        "scripts": ["index.js"],
+        "scripts": [
+            "index.js"
+        ],
         "persistent": false
     },
     "browser_action": {
         "default_popup": "index.html"
+    },
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": false
     }
 }

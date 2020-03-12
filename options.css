@@ -1,0 +1,22 @@
+main {
+    display: flex;
+}
+.controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+label {
+    flex: 2;
+}
+
+#fontFamily, #fontSize, #fontColor {
+    flex: 3;
+}
+
+section {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 5px 5px;
+}

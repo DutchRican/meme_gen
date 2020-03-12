@@ -3,14 +3,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctx = canvas.getContext("2d");
     let topCaption = '';
     let bottomCaption = '';
-    let fontSize = 25;
-    let fontFamily = 'Arial';
-    let fontStrokeColor = '#fff';
-    let fontFillColor = '#fff';
+    let fontSize;
+    let fontFamily;
+    let fontStrokeColor;
+    let fontFillColor;
+    const YELLOW = "#fcf003";
+    const DEFAULT_SIZE = 25;
+    const DEFAULT_FAMILY = 'Arial';
     const TOP = 'TOP';
     const BOTTOM = 'BOTTOM';
+    const MIN_HEIGHT = 150;
+    const ALLOWED_TYPES = /(jpg|png|gif|bmp|tiff|apng)/;
+    restore_values_from_storage()
 
-    const locationSelector = { TOP: topCaption, BOTTOM: bottomCaption };
 
     // collecting inputs
     const topCaptionInput = document.getElementById('topCaption');
@@ -21,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const fontFillInput = document.getElementById('fontFillColor');
     const fontStrokeInput = document.getElementById('fontStrokeColor');
     const saveButton = document.getElementById('saveImage');
-    const dropMessage = document.getElementById('dropMessage');
 
     topCaptionInput.addEventListener('input', (evt) => setText(evt, TOP));
     bottomCaptionInput.addEventListener('input', (evt) => setText(evt, BOTTOM));
@@ -29,12 +33,22 @@ document.addEventListener('DOMContentLoaded', function () {
     fontFamilyInput.addEventListener('change', (evt) => { fontFamily = evt.target.value; drawImage() });
     fontFillInput.addEventListener('change', (evt) => { fontFillColor = evt.target.value; drawImage() });
     fontStrokeInput.addEventListener('change', (evt) => { fontStrokeColor = evt.target.value; drawImage() });
-    imageCollection.addEventListener('change', evt => {img.src = evt.target.value; drawImage();});
+    imageCollection.addEventListener('change', evt => { img.src = evt.target.value; console.log(img.src); drawImage(); });
+    document.getElementById('settings').addEventListener('click', evt => {
+        if (chrome.runtime.openOptionsPage) {
+            chrome.runtime.openOptionsPage();
+        } else {
+            window.open(chrome.runtime.getURL('options.html'));
+        }
+    });
+
+
 
     const getImages = (results) => {
         if (!results) return;
-        const images = results[0].filter(img => img.height > 60); // getting rid of anything way too small
+        const images = results[0].filter(img => img.height > MIN_HEIGHT).filter(img => img.src.toLowerCase().match(ALLOWED_TYPES)); // getting rid of anything way too small
         for (let image of images) {
+            // if (!image.src.toLowerCase().match(ALLOWED_TYPES)) continue;
             const opt = document.createElement('option');
             opt.appendChild(document.createTextNode(image.alt || 'no name image'));
             opt.value = image.src;
@@ -45,35 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
         drawImage();
     }
 
-    chrome &&  chrome.tabs && chrome.tabs.getSelected(null, tab => {
+    chrome && chrome.tabs && chrome.tabs.getSelected(null, tab => {
         chrome.tabs.executeScript(
             tab.id,
-            {code: 'Array.prototype.map.call(document.querySelectorAll("img"), img => ({src:img.src, alt:img.alt, height:img.height}))'}
-          , getImages);
+            { code: 'Array.prototype.map.call(document.querySelectorAll("img"), img => ({src:img.src, alt:img.alt, height:img.height})).filter(img => img.src !== "")' }
+            , getImages);
     });
 
     saveButton.addEventListener('click', () => saveImage());
-
-    document.addEventListener('dragenter', evt => {
-        evt.preventDefault();
-        dropMessage.style.display = 'block';
-    });
-    document.addEventListener('dragleave', evt => {
-        evt.preventDefault();
-        dropMessage.style.display = 'none';
-    });
-
-    document.addEventListener('dragover', evt => {
-        evt.preventDefault();
-    });
-
-    document.addEventListener('drop', function (evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        const url = evt.dataTransfer.getData('URL');
-        dropMessage.style.display = 'none';
-        img.src = url;
-    }, false);
 
     // setup image 
     const img = new Image;
@@ -113,5 +106,21 @@ document.addEventListener('DOMContentLoaded', function () {
         link.download = 'image.png';
         link.href = newImg;
         link.click();
+    }
+
+    function restore_values_from_storage() {
+        // Use default value color = 'red' and likesColor = true.
+        chrome.storage.sync.get(null, function (items) {
+            fontSize = typeof (items.defaultSize) === 'string' ? items.defaultSize : DEFAULT_SIZE;;
+            fontFamily = typeof (items.defaultFamily) === 'string' ? items.defaultFamily : DEFAULT_FAMILY;
+            fontStrokeColor = typeof (items.defaultColor) === 'string' ? items.defaultColor : YELLOW;
+            fontFillColor = typeof (items.defaultColor) === 'string' ? items.defaultColor : YELLOW;
+
+            // setting initial values 
+            fontFillInput.value = fontFillColor;
+            fontStrokeInput.value = fontStrokeColor;
+            fontSizeInput.value = fontSize;
+            fontFamilyInput.value = fontFamily;
+        });
     }
 }, false);
