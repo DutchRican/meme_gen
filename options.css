@@ -11,8 +11,9 @@ label {
     flex: 2;
 }
 
-#fontFamily, #fontSize, #fontColor {
+#fontFamily, #fontSize, #fontColor, #minHeight {
     flex: 3;
+    text-align: right;
 }
 
 section {

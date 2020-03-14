@@ -1,7 +1,7 @@
 {
     "name": "Meme Generator",
     "short_name": "Meme Generator",
-    "version": "0.2",
+    "version": "0.3",
     "description": "Create a meme from an image on a page",
     "manifest_version": 2,
     "permissions": [

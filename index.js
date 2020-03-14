@@ -4,18 +4,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let topCaption = '';
     let bottomCaption = '';
     let fontSize;
+    let minHeight;
     let fontFamily;
     let fontStrokeColor;
     let fontFillColor;
-    const YELLOW = "#fcf003";
-    const DEFAULT_SIZE = 25;
-    const DEFAULT_FAMILY = 'Arial';
-    const TOP = 'TOP';
-    const BOTTOM = 'BOTTOM';
-    const MIN_HEIGHT = 150;
-    const ALLOWED_TYPES = /(jpg|png|gif|bmp|tiff|apng)/;
+    
     restore_values_from_storage()
-
 
     // collecting inputs
     const topCaptionInput = document.getElementById('topCaption');
@@ -46,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const getImages = (results) => {
         if (!results) return;
-        const images = results[0].filter(img => img.height > MIN_HEIGHT).filter(img => img.src.toLowerCase().match(ALLOWED_TYPES)); // getting rid of anything way too small
+        const images = results[0].filter(img => img.height > minHeight).filter(img => img.src.toLowerCase().match(ALLOWED_TYPES)); // getting rid of anything way too small
         for (let image of images) {
             // if (!image.src.toLowerCase().match(ALLOWED_TYPES)) continue;
             const opt = document.createElement('option');
@@ -111,7 +105,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function restore_values_from_storage() {
         // Use default value color = 'red' and likesColor = true.
         chrome.storage.sync.get(null, function (items) {
-            fontSize = typeof (items.defaultSize) === 'string' ? items.defaultSize : DEFAULT_SIZE;;
+            fontSize = typeof (items.defaultSize) === 'string' ? items.defaultSize : DEFAULT_SIZE;
+            minHeight = typeof (items.minHeight) === 'string' ? items.minHeight : MIN_HEIGHT;
             fontFamily = typeof (items.defaultFamily) === 'string' ? items.defaultFamily : DEFAULT_FAMILY;
             fontStrokeColor = typeof (items.defaultColor) === 'string' ? items.defaultColor : YELLOW;
             fontFillColor = typeof (items.defaultColor) === 'string' ? items.defaultColor : YELLOW;

@@ -23,6 +23,12 @@ section.submit {
     justify-content: flex-end;
 }
 
+#saveImage {
+    padding: 10px 4px;
+    margin-top: 1.8em;
+    border-radius: 5px;
+}
+
 #settings {
     float: right;
     position: relative;
